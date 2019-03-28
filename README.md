@@ -1,4 +1,4 @@
-# CMB-Karl
+# CMB
 
 M1: Candidate Selection
 
