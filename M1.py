@@ -4,13 +4,20 @@
 
 import torch
 import torch.nn as nn
-import torch.functional as F
+import torch.nn.functional as F
 import torch.utils.data as data
+import torch.optim as optim
+import torchvision
+import torchvision.transforms as transforms
+
+import pdb
+
 
 # Hyperparameters
 num_epochs = 5
 num_classes = 2
-batch_size = 100
+#batch_size = 100
+batch_size = 1 #for testing purpose
 learning_rate = 0.03
 momentum = 0.9
 dropout rate = 0.3
@@ -19,6 +26,7 @@ dropout rate = 0.3
 
 # 0.A. Creating a Fake Dataset for Experimentation
 
+# can be imported
 class FakeDataset(data.Dataset):
     def __init__(self, size = 1000, image_size=(512,512,512), num_classes = 2, transform = None, target_transform = None, random_offset = 0):
         self.size = size
@@ -59,6 +67,8 @@ class FakeDataset(data.Dataset):
         fmt_str += '{0}{1}'.format(tmp, self.target_transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
         return fmt_str
 
+#currently empty
+
 class TrainDataset(data.Dataset):
     def __init__(self):
         # TODO
@@ -74,6 +84,7 @@ class TrainDataset(data.Dataset):
         # Change 0 to the total size of your dataset.
         return 0
 
+#currently empty
 class TestDataset(torch.utils.data.Dataset):
     def __init__(self):
         # TODO
@@ -91,7 +102,7 @@ class TestDataset(torch.utils.data.Dataset):
 
 # Data loader.
 #train_dataset = TrainDataset()
-train_dataset = FakeDataset()
+train_dataset = torchvision.datasets.FakeData(size=1000, image_size=(64,64,32,3), num_classes=2, transform=transforms.ToTensor(), random_offset=0)
 train_loader = torch.utils.data.DataLoader(dataset = train_dataset, batch_size = batch_size, shuffle = True)
 #test_dataset = TestDataset()
 test_dataset = FakeDataset()
@@ -135,18 +146,17 @@ total_step = len(train_loader)
 for epoch in range(num_epochs):
 
     for i, (images, labels) in enumerate(train_loader):
+        #pdb.set_trace()
         images = images.to(device)
         labels = labels.to(device)
 
-        outputs = net2(images)
+        outputs = m1(images)
         loss = criterion(outputs, labels)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
-        if (i+1) % 100 == 0:
-            print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                   .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
+        print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, num_epochs, i+1, total_step, loss.item()))
 
 # 4. Testing
 
@@ -157,7 +167,7 @@ with torch.no_grad():
     for images, labels in test_loader:
         images = images.to(device)
         labels = labels.to(device)
-        outputs = model(images)
+        outputs = m1(images)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()

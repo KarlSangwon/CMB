@@ -4,18 +4,23 @@
 
 import torch
 import torch.nn as nn
-import torch.functional as F
+import torch.nn.functional as F
 import torch.utils.data as data
+import torch.optim as optim
+import torchvision
+import torchvision.transforms as transforms
+
+import pdb
 
 
 # Hyperparameters
 num_epochs = 5
 num_classes = 2
-batch_size = 100
+#batch_size = 100
+batch_size = 1 #for testing purpose
 learning_rate = 0.03
 momentum = 0.9
 dropout rate = 0.3
-
 # 0. Loading Data
 
 # 0.A. Creating a Fake Dataset for Experimentation
@@ -60,6 +65,8 @@ class FakeDataset(data.Dataset):
         fmt_str += '{0}{1}'.format(tmp, self.target_transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
         return fmt_str
 
+#currently empty
+
 class TrainDataset(torch.utils.data.Dataset):
     def __init__(self):
         # TODO
@@ -74,6 +81,7 @@ class TrainDataset(torch.utils.data.Dataset):
     def __len__(self):
         # Change 0 to the total size of your dataset.
         return 0
+#currently empty
 
 class TestDataset(torch.utils.data.Dataset):
     def __init__(self):
@@ -138,18 +146,17 @@ total_step = len(train_loader)
 for epoch in range(num_epochs):
 
     for i, (images, labels) in enumerate(train_loader):
+        #pdb.set_trace()
         images = images.to(device)
         labels = labels.to(device)
 
-        outputs = net2(images)
+        outputs = m2(images)
         loss = criterion(outputs, labels)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
-        if (i+1) % 100 == 0:
-            print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                   .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
+        print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'.format(epoch+1, num_epochs, i+1, total_step, loss.item()))
 
 # 4. Testing
 
@@ -160,7 +167,7 @@ with torch.no_grad():
     for images, labels in test_loader:
         images = images.to(device)
         labels = labels.to(device)
-        outputs = model(images)
+        outputs = m2(images)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
@@ -168,4 +175,4 @@ with torch.no_grad():
     print('Test Accuracy of the model on the test images: {} %'.format(100 * correct / total))
 
 # 5. Save the model checkpoint
-torch.save(model.state_dict(), 'm1.ckpt')
+torch.save(model.state_dict(), 'm2.ckpt')
