@@ -113,7 +113,7 @@ test_loader = torch.utils.data.DataLoader(dataset = test_dataset, batch_size = b
 class M1(nn.Module):
 
     def __init__(self):
-        super(Net, self).__init__()
+        super(M1, self).__init__()
         self.conv1 = nn.Sequential(nn.Conv3d(1,64, (5,5,3)), nn.Dropout(0.2)) # in_channel, out_channel, kernel
         self.pool = nn.MaxPool3d((2, 2, 2),2) # kernerl, stride
         self.conv2 = nn.Sequential(nn.Conv3d(64, 64, (3,3,3)), nn.Dropout(0.3)) # in_channel, out_channel, kernel
@@ -134,12 +134,12 @@ m1 = M1()
 # 2. Loss and Optimizer
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr = learning_rate)
+optimizer = optim.SGD(M1.parameters(), lr = learning_rate)
 
 # 3. Training Loop
 
 device = torch.device('cuda: 0' if torch.cuda.is_available() else 'cpu')
-net.to(device)
+m1.to(device)
 
 total_step = len(train_loader)
 
