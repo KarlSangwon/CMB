@@ -20,7 +20,7 @@ num_classes = 2
 batch_size = 1 #for testing purpose
 learning_rate = 0.03
 momentum = 0.9
-dropout rate = 0.3
+dropout_rate = 0.3
 
 # 0. Loading Data
 
