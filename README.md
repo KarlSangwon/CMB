@@ -1,7 +1,6 @@
 # CMB
 
-M1: Candidate Selection
+CMB Extractor: Extracts 16x16x16 region of CMB or non-CMB for a given .nii file and stores them in numpy array.
 
-M2: Discrimination Stage
+M1_train: Training Stage for M1.
 
-Ignore model.py
